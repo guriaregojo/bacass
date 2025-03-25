@@ -38,6 +38,7 @@ include { QUAST                                 } from '../modules/nf-core/quast
 include { QUAST as QUAST_BYREFSEQID             } from '../modules/nf-core/quast/main'
 include { GUNZIP                                } from '../modules/nf-core/gunzip/main'
 include { PROKKA                                } from '../modules/nf-core/prokka/main'
+include { BUSCO_BUSCO as BUSCO                  } from '../modules/nf-core/busco/busco/main'
 
 //
 // SUBWORKFLOWS: Consisting of a mix of local and nf-core/modules
@@ -465,6 +466,23 @@ workflow BACASS {
         .set{ ch_assembly_for_gunzip }
 
     //
+    // MODULE: BUSCO, assess genome assembly completeness
+    //
+    ch_busco_multiqc = Channel.empty()
+    if (!params.skip_busco) {
+        BUSCO (
+                ch_assembly,                          // tuple val(meta), path(fasta)
+        	params.busco_mode,                    // val mode
+        	params.busco_lineage,                 // val lineage
+        	params.busco_db_path ? file(params.busco_db_path) : [],  // path busco_lineages_path
+        	params.busco_config_file ? file(params.busco_config_file) : [],  // path config_file (optional)
+        	params.busco_clean_intermediates      // val clean_intermediates
+        )
+        ch_busco_multiqc = BUSCO.out.short_summaries_txt
+        ch_versions = ch_versions.mix(BUSCO.out.versions)
+    }
+
+    //
     // MODULE: PROKKA, gene annotation
     //
     ch_prokka_txt_multiqc = Channel.empty()
@@ -551,6 +569,7 @@ workflow BACASS {
         ch_kraken_short_multiqc.collect{it[1]}.ifEmpty([]),
         ch_kraken_long_multiqc.collect{it[1]}.ifEmpty([]),
         ch_quast_multiqc.collect{it[1]}.ifEmpty([]),
+        ch_busco_multiqc.collect{it[1]}.ifEmpty([]),
         ch_prokka_txt_multiqc.collect().ifEmpty([]),
         ch_bakta_txt_multiqc.collect().ifEmpty([]),
         ch_kmerfinder_multiqc.collectFile(name: 'multiqc_kmerfinder.yaml').ifEmpty([]),

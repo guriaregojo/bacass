@@ -15,6 +15,11 @@
                         "git_sha": "7c06e6820fa3918bc28a040e794f8a2b39fabadb",
                         "installed_by": ["modules"]
                     },
+                    "busco/busco": {
+                        "branch": "master",
+                        "git_sha": "4cb2f9ee119676880857d6620020ee370df829b4",
+                        "installed_by": ["modules"]
+                    },
                     "canu": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",

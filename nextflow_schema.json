@@ -141,6 +141,39 @@
                 }
             }
         },
+        "busco_options": {
+            "title": "BUSCO options",
+            "type": "object",
+            "description": "Options for running BUSCO",
+            "default": "",
+            "fa_icon": "fas fa-dna",
+            "properties": {
+                "busco_lineage": {
+                    "type": "string",
+                    "default": "auto",
+                    "description": "BUSCO lineage to use"
+                },
+                "busco_mode": {
+                    "type": "string",
+                    "default": "genome",
+                    "description": "BUSCO mode to use",
+                    "enum": ["genome", "proteins", "transcriptome"]
+                },
+                "busco_db_path": {
+                    "type": ["string", "null"],
+                    "description": "Path to BUSCO database"
+                },
+                "busco_config_file": {
+                    "type": ["string", "null"],
+                    "description": "Path to BUSCO config file"
+                },
+                "busco_clean_intermediates": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Clean intermediate BUSCO files"
+                }
+            }
+        },    
         "assembly_polishing": {
             "title": "Assembly Polishing",
             "type": "object",
@@ -233,6 +266,11 @@
                 "skip_multiqc": {
                     "type": "boolean",
                     "description": "Skip MultiQC",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_busco": {
+                    "type": "boolean",
+                    "description": "Skip BUSCO",
                     "fa_icon": "fas fa-forward"
                 }
             }
@@ -406,6 +444,9 @@
         },
         {
             "$ref": "#/$defs/assembly_parameters"
+        },
+	{
+            "$ref": "#/$defs/busco_options"
         },
         {
             "$ref": "#/$defs/assembly_polishing"
